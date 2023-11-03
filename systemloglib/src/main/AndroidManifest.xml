@@ -3,16 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application android:usesCleartextTraffic="true">
+        <service
+            android:name=".MonitorInterfaceService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
             android:exported="false"
             tools:node="merge">
-            <!-- provider 节点增加 tools:node="remove"  禁止自动初始化-->
+
+            <!-- provider 节点增加 tools:node="remove"  禁止自动初始化 -->
             <meta-data
                 android:name="com.android.systemloglib.initializer.MonitorInitializer"
+                tools:node= "remove"
                 android:value="androidx.startup" />
-            <!-- meta-data 节点增加 tools:node= "remove"  取消初始化-->
+            <!-- meta-data 节点增加 tools:node= "remove"  取消初始化 -->
         </provider>
     </application>
 

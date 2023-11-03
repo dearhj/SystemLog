@@ -4,15 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="10dp"
     tools:context=".MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="监听相机情况："
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/cameraInfo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/camera"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/cameraInfo"
+        android:text="监听定位情况："
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/locationInfo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/location"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/locationInfo"
+        android:text="权限监听情况："
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/permissionInfo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/permission"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/nfc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/permissionInfo"
+        android:text="NFC监听情况："
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/nfcInfo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/nfc"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/app"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/nfcInfo"
+        android:text="应用监听情况："
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/appInfo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/app"
+        tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/appInfo"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/button_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="文件日志">
+        </Button>
+        <Button
+            android:id="@+id/button_network"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="网络日志">
+        </Button>
+        <Button
+            android:id="@+id/button_network1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="流量记录">
+        </Button>
+    </LinearLayout>
+    <EditText
+        android:id="@+id/edit"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:hint="文件日志请输入需要查看的目录,时间段默认往前1000s区间；网络日志请输入包名，时间段默认往前1000s区间；流量日志请输入包名。"
+        app:layout_constraintTop_toBottomOf="@id/button"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:id="@+id/textInfo"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintTop_toBottomOf="@id/edit"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

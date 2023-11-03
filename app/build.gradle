@@ -5,21 +5,34 @@ plugins {
 
 android {
     namespace 'com.android.systemlog'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.android.systemlog"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
     }
 
+    signingConfigs {
+        sign {
+            //T50 T195 Q66 Q865M_Q115M_android11 Q86  Q86M Q81 NewPublic
+            storeFile file("D:\\Android12SignerGUI\\SignFiles\\T195\\platform.jks")
+            storePassword('android')
+            keyAlias('android')
+            keyPassword('android')
+        }
+    }
     buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.sign
+        }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.sign
         }
     }
     compileOptions {
@@ -37,4 +50,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation project(path: ':systemloglib')
 }
