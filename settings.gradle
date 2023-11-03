@@ -10,9 +10,11 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url 'E:\\githubCode\\SystemLog\\lib' }     //二进制文件保存路径
     }
 }
 
 rootProject.name = "SystemLog"
 include ':app'
 include ':systemloglib'
+include ':lib'

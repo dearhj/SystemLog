@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -26,6 +27,28 @@ android {
         jvmTarget = '1.8'
     }
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            def today = new Date().format('yyyyMMdd')
+            release(MavenPublication) {
+                from components.release
+                groupId = 'com.android.systemloglib'
+                artifactId = 'systemloglib'
+                version = "1.0-$today"
+            }
+        }
+        repositories {
+            mavenLocal()
+            maven {
+                url uri('E://githubCode//SystemLog//lib')  //编译后的二进制文件保存路径
+            }
+        }
+    }
+}
+
+//编译二进制文件指令： gradlew publish
 
 dependencies {
     implementation 'androidx.core:core:1.12.0'
