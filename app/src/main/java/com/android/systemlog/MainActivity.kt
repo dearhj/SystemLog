@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         textViewApp?.movementMethod = ScrollingMovementMethod()
         textViewResult?.movementMethod = ScrollingMovementMethod()
 
+        registerListenInterface(this)
+
         findViewById<Button>(R.id.button_file).setOnClickListener {
             if(editText?.text.toString() == "") Toast.makeText(this, "请输入需要过滤的文件夹目录，eg: /data  多个目录请用,隔开", Toast.LENGTH_SHORT).show()
             else {
@@ -69,12 +71,10 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.button_network1).setOnClickListener {
             if(editText?.text.toString() == "") Toast.makeText(this, "请输入包名", Toast.LENGTH_SHORT).show()
             else {
-                val result = getTrafficByPackageName(this, editText?.text.toString())
-                textViewResult?.text = "${textViewResult?.text}包名：$packageName   流量：${result["packageName"]}\n"
+                val result = getTrafficByPackageName(editText?.text.toString())
+                textViewResult?.text = "${textViewResult?.text}包名：${editText?.text.toString()}   流量：${result[editText?.text.toString()]}\n"
             }
         }
-
-        registerListenInterface(this)
 
         setCameraUsageListener { packageName, enable ->
             textViewCamera?.text =

@@ -18,3 +18,4 @@ rootProject.name = "SystemLog"
 include ':app'
 include ':systemloglib'
 include ':lib'
+include ':systemloghelp'

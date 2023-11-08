@@ -1,12 +1,8 @@
 package com.android.systemloglib
 
 import android.annotation.SuppressLint
-import android.app.usage.NetworkStatsManager
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.TrafficStats
-import android.telephony.TelephonyManager
 import android.text.TextUtils
 
 
@@ -26,6 +22,11 @@ fun registerListenInterface(context: Context) {
     }
     try {
         context.startService(Intent(context, MonitorInterfaceService::class.java))
+
+        val intent = Intent()
+        intent.action = "com.android.systemloghelp.LogHelpService"
+        intent.setPackage("com.android.systemloghelp")
+        context.bindService(intent, conn, Context.BIND_AUTO_CREATE)
     } catch (_: Exception) {
     }
 }
@@ -38,6 +39,7 @@ fun registerListenInterface(context: Context) {
 fun unRegisterListenInterface(context: Context) {
     try {
         context.stopService(Intent(context, MonitorInterfaceService::class.java))
+        unbind(context)
     } catch (_: Exception) {
     }
 }
@@ -177,29 +179,21 @@ fun getNetworkRecordList(
 
 /**
  * @description 获取流量接口
- * @param context 上下文
- * @param packageName 包名
+ * @param packageName 包名,这里的流量是从设备开机时开始计算的
  * @return packageName,traffic(使用的字节数)
  */
 @SuppressLint("MissingPermission", "HardwareIds")
 fun getTrafficByPackageName(
-    context: Context, packageName: String
+    packageName: String
 ): Map<String, String> {
+    var data = "0"
     try {
-        val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        val subId = tm.subscriberId
-        println("获取到的SubId=${subId}")
-        val nsm =
-            context.getSystemService(Context.NETWORK_STATS_SERVICE) as NetworkStatsManager
-        nsm.querySummary(
-            ConnectivityManager.TYPE_MOBILE,
-            subId,
-            getTimesMonthMorning(),
-            System.currentTimeMillis()
-        )
+        mService?.getNetWorkTrafficData(packageName, object : IGetTrafficInfoInterface.Stub() {
+            override fun getTrafficData(packageName: String?, trafficNum: String?) {
+                trafficNum?.let { data = it }
+            }
+        })
     } catch (_: Exception) {
     }
-    val rx = TrafficStats.getUidRxBytes(getUid(context, packageName))
-    val tx = TrafficStats.getUidTxBytes(getUid(context, packageName))
-    return mapOf(packageName to "${tx + rx}")
+    return mapOf(packageName to data)
 }

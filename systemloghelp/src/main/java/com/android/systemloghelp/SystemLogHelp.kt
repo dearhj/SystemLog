@@ -7,7 +7,7 @@ import android.content.Intent
 import android.os.IBinder
 import com.android.systemloglib.IGetTrafficInfoInterface
 import com.android.systemloglib.ISystemLogHelpInterface
-import com.android.systemloglib.getTrafficByPackageName
+import com.android.systemloglib.getTrafficDataByPackageName
 
 class SystemLogHelp : Service() {
     companion object {
@@ -29,10 +29,9 @@ class SystemLogHelp : Service() {
             if(packageName!= null && context != null) {
                 data?.getTrafficData(
                     packageName,
-                    getTrafficByPackageName(context!!, packageName)[packageName]
+                    getTrafficDataByPackageName(context!!, packageName)[packageName]
                 )
             }
         }
-
     }
 }
