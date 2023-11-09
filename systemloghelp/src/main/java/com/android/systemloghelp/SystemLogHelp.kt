@@ -1,10 +1,12 @@
 package com.android.systemloghelp
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.android.systemloglib.IApplicationInfoInterface
 import com.android.systemloglib.IFileUsageRecordInterface
 import com.android.systemloglib.INetworkRecordInterface
 import com.android.systemloglib.ISystemLogHelpInterface
@@ -62,6 +64,34 @@ class SystemLogHelp : Service() {
                     )
                 }
             }
+        }
+
+        override fun getApplicationByPid(pid: Int): String {
+            try {
+                return getPackageNameFromPid(pid)
+            } catch (_: Exception) {
+            }
+            return ""
+        }
+
+        override fun getAllApplicationByRunningAppProcesses(applicationInfoListen: IApplicationInfoInterface?) {
+            try {
+                val am = (context?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+                val runningProcess = am.runningAppProcesses
+                runningProcess?.forEach {
+                    applicationInfoListen?.applicationInfoList(
+                        it.processName,
+                        it.pid
+                    )
+                }
+            } catch (_: Exception) {
+            }
+        }
+
+        private fun getPackageNameFromPid(pid: Int): String {
+            val am = (context?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+            val runningProcess = am.runningAppProcesses
+            return runningProcess.firstOrNull { it.pid == pid }?.processName ?: ""
         }
     }
 }

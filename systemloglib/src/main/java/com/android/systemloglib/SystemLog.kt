@@ -3,7 +3,6 @@ package com.android.systemloglib
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 
 
 /**
@@ -12,20 +11,21 @@ import android.text.TextUtils
  * @return null
  */
 fun registerListenInterface(context: Context) {
-    writePackageList(context)?.apply {
-        try {
-            val builder = StringBuilder()
-            this.forEach { builder.append(it).append("\n") }
-            write(builder.toString())
-        } catch (_: Exception) {
-        }
-    }
     try {
-        context.startService(Intent(context, MonitorInterfaceService::class.java))
         val intent = Intent()
         intent.action = "com.android.systemloghelp.LogHelpService"
         intent.setPackage("com.android.systemloghelp")
         context.bindService(intent, conn, Context.BIND_AUTO_CREATE)
+
+        writePackageList(context)?.apply {
+            try {
+                val builder = StringBuilder()
+                this.forEach { builder.append(it).append("\n") }
+                write(builder.toString())
+            } catch (_: Exception) {
+            }
+        }
+        context.startService(Intent(context, MonitorInterfaceService::class.java))
     } catch (_: Exception) {
     }
 }
