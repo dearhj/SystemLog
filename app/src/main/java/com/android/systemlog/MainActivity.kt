@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
             if(editText?.text.toString() == "") Toast.makeText(this, "请输入包名", Toast.LENGTH_SHORT).show()
             else {
                 val result = getTrafficByPackageName(editText?.text.toString())
-                textViewResult?.text = "${textViewResult?.text}包名：${editText?.text.toString()}   流量：${result[editText?.text.toString()]}\n"
+                textViewResult?.text = "${textViewResult?.text}包名：${editText?.text.toString()}   流量：${result?.get(editText?.text.toString())}\n"
             }
         }
 

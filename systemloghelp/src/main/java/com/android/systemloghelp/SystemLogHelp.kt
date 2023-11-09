@@ -5,8 +5,9 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
-import com.android.systemloglib.IGetTrafficInfoInterface
+import com.android.systemloglib.INetworkRecordInterface
 import com.android.systemloglib.ISystemLogHelpInterface
+import com.android.systemloglib.getNetworkRecordDataList
 import com.android.systemloglib.getTrafficDataByPackageName
 
 class SystemLogHelp : Service() {
@@ -21,16 +22,26 @@ class SystemLogHelp : Service() {
     }
 
     class MyBinder : ISystemLogHelpInterface.Stub() {
+        override fun getNetWorkTrafficData(packageName: String?): MutableMap<String, String>? {
+            if (packageName != null && context != null) {
+                return getTrafficDataByPackageName(context!!, packageName).toMutableMap()
+            }
+            return null
+        }
 
-        override fun getNetWorkTrafficData(
+        override fun getNetworkRecordData(
             packageName: String?,
-            data: IGetTrafficInfoInterface?
+            previousTime: Long,
+            networkRecodeListen: INetworkRecordInterface?
         ) {
-            if(packageName!= null && context != null) {
-                data?.getTrafficData(
-                    packageName,
-                    getTrafficDataByPackageName(context!!, packageName)[packageName]
-                )
+            if (packageName != null) {
+                getNetworkRecordDataList(packageName, previousTime).forEach {
+                    networkRecodeListen?.networkRecodeInfo(
+                        it["packageName"],
+                        it["url"],
+                        it["logTime"]
+                    )
+                }
             }
         }
     }

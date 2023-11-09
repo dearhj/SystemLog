@@ -22,7 +22,6 @@ fun registerListenInterface(context: Context) {
     }
     try {
         context.startService(Intent(context, MonitorInterfaceService::class.java))
-
         val intent = Intent()
         intent.action = "com.android.systemloghelp.LogHelpService"
         intent.setPackage("com.android.systemloghelp")
@@ -147,31 +146,26 @@ fun getNetworkRecordList(
     packageName: String, previousTime: Long
 ): List<Map<String, String>> {
     val returnList = mutableListOf<Map<String, String>>()
-    val list = read2("/sdcard/log")
-    list?.forEach {
-        try {
-            it?.apply {
-                val splits = it.split(",")
-                val time = splits[0]
-                val packageName2 = splits[1]
-                val typeItems = splits[2].split("=")
-                val typeStr = typeItems[0]
-                if ("openConnection" == typeStr || "SocketgetInputStream" == typeStr) {
-                    val timeCount = System.currentTimeMillis() - previousTime
-                    if (packageName2 == packageName && time.toLong() >= timeCount) {
-                        val url = typeItems[1]
-                        returnList.add(
-                            mapOf(
-                                "packageName" to packageName2,
-                                "url" to url,
-                                "logTime" to time
-                            )
+    try {
+        mService?.getNetworkRecordData(
+            packageName,
+            previousTime,
+            object : INetworkRecordInterface.Stub() {
+                override fun networkRecodeInfo(
+                    packageNameResult: String?,
+                    urlResult: String?,
+                    longTimeResult: String?
+                ) {
+                    returnList.add(
+                        mapOf(
+                            "packageName" to (packageNameResult ?: ""),
+                            "url" to (urlResult ?: ""),
+                            "logTime" to (longTimeResult ?: "")
                         )
-                    }
+                    )
                 }
-            }
-        } catch (_: Exception) {
-        }
+            })
+    } catch (_: Exception) {
     }
     return returnList
 }
@@ -185,15 +179,11 @@ fun getNetworkRecordList(
 @SuppressLint("MissingPermission", "HardwareIds")
 fun getTrafficByPackageName(
     packageName: String
-): Map<String, String> {
-    var data = "0"
+): Map<String, String>? {
+    var data: Map<String, String>? = null
     try {
-        mService?.getNetWorkTrafficData(packageName, object : IGetTrafficInfoInterface.Stub() {
-            override fun getTrafficData(packageName: String?, trafficNum: String?) {
-                trafficNum?.let { data = it }
-            }
-        })
+        data = mService?.getNetWorkTrafficData(packageName)
     } catch (_: Exception) {
     }
-    return mapOf(packageName to data)
+    return data
 }

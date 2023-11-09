@@ -99,7 +99,6 @@ lateinit var nfcListener: (String) -> Unit
 lateinit var applicationListener: (String, Int) -> Unit
 
 
-
 var mService: ISystemLogHelpInterface? = null
 val conn: ServiceConnection = object : ServiceConnection {
     override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -114,6 +113,7 @@ val conn: ServiceConnection = object : ServiceConnection {
         mService = null
     }
 }
+
 /**
  * 移除绑定
  * @param context 上下文
@@ -150,5 +150,46 @@ fun getTrafficDataByPackageName(
     val rx = TrafficStats.getUidRxBytes(getUid(context, packageName))
     val tx = TrafficStats.getUidTxBytes(getUid(context, packageName))
     return mapOf(packageName to "${tx + rx}")
+}
+
+
+/**
+ * @description 获取网络流量日志接口
+ * @param packageName 包名
+ * @param previousTime 从现在到以前的时间段
+ * @return List<Map<String, String>> 数据集合   packageName(包名)、url(请求连接/请求域)、logTime(日志时间)
+ */
+@SuppressLint("SdCardPath")
+fun getNetworkRecordDataList(
+    packageName: String, previousTime: Long
+): List<Map<String, String>> {
+    val returnList = mutableListOf<Map<String, String>>()
+    val list = read2("/sdcard/log")
+    list?.forEach {
+        try {
+            it?.apply {
+                val splits = it.split(",")
+                val time = splits[0]
+                val packageName2 = splits[1]
+                val typeItems = splits[2].split("=")
+                val typeStr = typeItems[0]
+                if ("openConnection" == typeStr || "SocketgetInputStream" == typeStr) {
+                    val timeCount = System.currentTimeMillis() - previousTime
+                    if (packageName2 == packageName && time.toLong() >= timeCount) {
+                        val url = typeItems[1]
+                        returnList.add(
+                            mapOf(
+                                "packageName" to packageName2,
+                                "url" to url,
+                                "logTime" to time
+                            )
+                        )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+    }
+    return returnList
 }
 

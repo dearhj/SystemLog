@@ -1,7 +1,8 @@
 package com.android.systemloglib;
 
-import com.android.systemloglib.IGetTrafficInfoInterface;
+import com.android.systemloglib.INetworkRecordInterface;
 
 interface ISystemLogHelpInterface {
-    void getNetWorkTrafficData(in String packageName, in IGetTrafficInfoInterface data);
+    Map<String, String> getNetWorkTrafficData(in String packageName);
+    void getNetworkRecordData(in String packageName, in long previousTime, in INetworkRecordInterface networkRecodeListen);
 }
