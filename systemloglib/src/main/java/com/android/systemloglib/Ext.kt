@@ -13,6 +13,7 @@ import android.net.TrafficStats
 import android.os.Build
 import android.os.IBinder
 import android.telephony.TelephonyManager
+import android.text.TextUtils
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
@@ -181,6 +182,54 @@ fun getNetworkRecordDataList(
                             mapOf(
                                 "packageName" to packageName2,
                                 "url" to url,
+                                "logTime" to time
+                            )
+                        )
+                    }
+                }
+            }
+        } catch (_: Exception) {
+        }
+    }
+    return returnList
+}
+
+
+/**
+ * @description 获取文件日志接口
+ * @param filePaths 过滤的列表
+ * @param previousTime 从现在到以前的时间段
+ * @return List<Map<String, String>> 数据集合  packageName(包名)、filePath(文件路径)，fileOperateType(增删改查)、logTime(日志时间)
+ */
+@SuppressLint("SdCardPath")
+fun getFileUsageRecordDataList(
+    filePaths: List<String>, previousTime: Long
+): List<Map<String, String>> {
+    val returnList = mutableListOf<Map<String, String>>()
+    val list = read2("/sdcard/log")
+    list?.forEach {
+        try {
+            it?.apply {
+                val splits = it.split(",")
+                val time = splits[0]
+                val packageName = splits[1]
+                val typeItems = splits[2].split("=")
+                val typeStr = when (typeItems[0]) {
+                    "createNewFile" -> "create"
+                    "delete" -> "delete"
+                    "FileInputStream" -> "input"
+                    "FileOutputStream" -> "output"
+                    else -> ""
+                }
+                if (!TextUtils.isEmpty(typeStr)) {
+                    val path = typeItems[1]
+                    val timeCount = System.currentTimeMillis() - previousTime
+                    if (filePaths.any { whitePath -> path.startsWith(whitePath) } && time.toLong() >= timeCount) {
+                        returnList.add(
+                            mapOf(
+                                "packageName" to packageName,
+                                "filePath" to path,
+                                "fileOperateType" to typeStr,
                                 "logTime" to time
                             )
                         )

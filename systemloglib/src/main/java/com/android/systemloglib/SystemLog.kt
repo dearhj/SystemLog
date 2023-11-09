@@ -99,38 +99,28 @@ fun getFileUsageRecordList(
     filePaths: List<String>, previousTime: Long
 ): List<Map<String, String>> {
     val returnList = mutableListOf<Map<String, String>>()
-    val list = read2("/sdcard/log")
-    list?.forEach {
-        try {
-            it?.apply {
-                val splits = it.split(",")
-                val time = splits[0]
-                val packageName = splits[1]
-                val typeItems = splits[2].split("=")
-                val typeStr = when (typeItems[0]) {
-                    "createNewFile" -> "create"
-                    "delete" -> "delete"
-                    "FileInputStream" -> "input"
-                    "FileOutputStream" -> "output"
-                    else -> ""
-                }
-                if (!TextUtils.isEmpty(typeStr)) {
-                    val path = typeItems[1]
-                    val timeCount = System.currentTimeMillis() - previousTime
-                    if (filePaths.any { whitePath -> path.startsWith(whitePath) } && time.toLong() >= timeCount) {
-                        returnList.add(
-                            mapOf(
-                                "packageName" to packageName,
-                                "filePath" to path,
-                                "fileOperateType" to typeStr,
-                                "logTime" to time
-                            )
+    try {
+        mService?.getFileUsageRecordData(
+            filePaths,
+            previousTime,
+            object : IFileUsageRecordInterface.Stub() {
+                override fun fileUsageRecordInfo(
+                    packageNameResult: String?,
+                    filePathResult: String?,
+                    fileOperateTypeResult: String?,
+                    logTimeResult: String?
+                ) {
+                    returnList.add(
+                        mapOf(
+                            "packageName" to (packageNameResult ?: ""),
+                            "filePath" to (filePathResult ?: ""),
+                            "fileOperateType" to (fileOperateTypeResult ?: ""),
+                            "logTime" to (logTimeResult ?: "")
                         )
-                    }
+                    )
                 }
-            }
-        } catch (_: Exception) {
-        }
+            })
+    } catch (_: Exception) {
     }
     return returnList
 }

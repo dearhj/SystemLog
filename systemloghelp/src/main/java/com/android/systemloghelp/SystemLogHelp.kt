@@ -5,8 +5,10 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import com.android.systemloglib.IFileUsageRecordInterface
 import com.android.systemloglib.INetworkRecordInterface
 import com.android.systemloglib.ISystemLogHelpInterface
+import com.android.systemloglib.getFileUsageRecordDataList
 import com.android.systemloglib.getNetworkRecordDataList
 import com.android.systemloglib.getTrafficDataByPackageName
 
@@ -39,6 +41,23 @@ class SystemLogHelp : Service() {
                     networkRecodeListen?.networkRecodeInfo(
                         it["packageName"],
                         it["url"],
+                        it["logTime"]
+                    )
+                }
+            }
+        }
+
+        override fun getFileUsageRecordData(
+            filePaths: MutableList<String>?,
+            previousTime: Long,
+            fileUsageRecordListen: IFileUsageRecordInterface?
+        ) {
+            if (filePaths != null) {
+                getFileUsageRecordDataList(filePaths, previousTime).forEach {
+                    fileUsageRecordListen?.fileUsageRecordInfo(
+                        it["packageName"],
+                        it["filePath"],
+                        it["fileOperateType"],
                         it["logTime"]
                     )
                 }
