@@ -1,8 +1,10 @@
 package com.android.systemloglib
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import java.lang.Thread.sleep
 
 
 /**
@@ -12,23 +14,17 @@ import android.content.Intent
  */
 fun registerListenInterface(context: Context) {
     try {
+        mActivity = context as Activity
         val intent = Intent()
         intent.action = "com.android.systemloghelp.LogHelpService"
         intent.setPackage("com.android.systemloghelp")
         context.bindService(intent, conn, Context.BIND_AUTO_CREATE)
-
-        writePackageList(context)?.apply {
-            try {
-                val builder = StringBuilder()
-                this.forEach { builder.append(it).append("\n") }
-                write(builder.toString())
-            } catch (_: Exception) {
-            }
-        }
-        context.startService(Intent(context, MonitorInterfaceService::class.java))
     } catch (_: Exception) {
     }
 }
+
+@SuppressLint("StaticFieldLeak")
+var mActivity: Activity? = null
 
 /**
  * @description 取消注册监听
@@ -37,7 +33,6 @@ fun registerListenInterface(context: Context) {
  */
 fun unRegisterListenInterface(context: Context) {
     try {
-        context.stopService(Intent(context, MonitorInterfaceService::class.java))
         unbind(context)
     } catch (_: Exception) {
     }
@@ -49,7 +44,16 @@ fun unRegisterListenInterface(context: Context) {
  * @return null
  */
 fun setCameraUsageListener(onChange: (String, Boolean) -> Unit) {
-    cameraListener = onChange
+    Thread {
+        while (mService == null) {
+            sleep(50)
+        }
+        mService?.getCameraUsageInfoData(object : ICameraUsageInfoDataInterface.Stub() {
+            override fun cameraUsageInfo(pkName: String?, enable: Boolean) {
+                pkName?.let { mActivity?.runOnUiThread { onChange(it, enable) } }
+            }
+        })
+    }.start()
 }
 
 /**
@@ -58,16 +62,34 @@ fun setCameraUsageListener(onChange: (String, Boolean) -> Unit) {
  * @return null
  */
 fun setGpsUsageListener(onChange: (String) -> Unit) {
-    gpsListener = onChange
+    Thread {
+        while (mService == null) {
+            sleep(50)
+        }
+        mService?.getLocationUsageInfoData(object : ILocationUsageInfoDataInterface.Stub() {
+            override fun locationInfoData(pkgName: String?) {
+                pkgName?.let { mActivity?.runOnUiThread { onChange(it) } }
+            }
+        })
+    }.start()
 }
 
 /**
  * @description 权限授权日志接口
- * @param onChange 回调接口，其中第一个参数为请求权限的包名，第二个参数为请求的权限，第三个参数为授权情况
+ * @param onChange 回调接口，其中第一个参数为请求权限的包名，第二个参数为请求的权限，第三个参数为授权情况（其中0代表允许 2代表拒绝 4代表仅允许此次）
  * @return null
  */
 fun setAppPermissionRequestListener(onChange: (String, String?, Int) -> Unit) {
-    permissionListener = onChange
+    Thread {
+        while (mService == null) {
+            sleep(50)
+        }
+        mService?.getPremissionUsageInfoData(object : IPermissionUsageInfoDataInterface.Stub() {
+            override fun permissionInfoData(pkgName: String?, name: String?, status: Int) {
+                pkgName?.let { mActivity?.runOnUiThread { onChange(it, name, status) } }
+            }
+        })
+    }.start()
 }
 
 /**
@@ -76,7 +98,16 @@ fun setAppPermissionRequestListener(onChange: (String, String?, Int) -> Unit) {
  * @return null
  */
 fun setNfcUsageListener(onChange: (String) -> Unit) {
-    nfcListener = onChange
+    Thread {
+        while (mService == null) {
+            sleep(50)
+        }
+        mService?.getNfcUsageInfoData(object : INfcUsageInfoDataInterface.Stub() {
+            override fun nfcInfoData(pkgName: String?) {
+                pkgName?.let { mActivity?.runOnUiThread { onChange(it) } }
+            }
+        })
+    }.start()
 }
 
 /**
@@ -85,7 +116,16 @@ fun setNfcUsageListener(onChange: (String) -> Unit) {
  * @return null
  */
 fun setAppUsageListener(onChange: (String, Int) -> Unit) {
-    applicationListener = onChange
+    Thread {
+        while (mService == null) {
+            sleep(50)
+        }
+        mService?.getAppUsageInfoData(object : IAppUsageInfoDataInterface.Stub() {
+            override fun appInfoData(pkName: String?, status: Int) {
+                pkName?.let { mActivity?.runOnUiThread { onChange(it, status) } }
+            }
+        })
+    }.start()
 }
 
 /**

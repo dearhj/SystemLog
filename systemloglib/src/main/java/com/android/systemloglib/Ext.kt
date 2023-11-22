@@ -4,16 +4,16 @@ import android.annotation.SuppressLint
 import android.app.usage.NetworkStatsManager
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.ApplicationInfo
-import android.content.pm.ResolveInfo
+import android.content.pm.PackageInfo
 import android.net.ConnectivityManager
 import android.net.TrafficStats
 import android.os.Build
 import android.os.IBinder
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardOpenOption
@@ -30,12 +30,8 @@ fun now(): String = SimpleDateFormat(
 fun writePackageList(context: Context): List<String>? {
     var list: List<String>? = null
     try {
-        val pm = context.packageManager
-        val intent = Intent(Intent.ACTION_MAIN)
-        intent.addCategory(Intent.CATEGORY_LAUNCHER)
-        intent.flags = Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED or Intent.FLAG_ACTIVITY_NEW_TASK
-        val queryIntentActivities: List<ResolveInfo> = pm.queryIntentActivities(intent, 0x00002000)
-        list = queryIntentActivities.map { it.activityInfo.packageName }.toList()
+        val installedPackages: List<PackageInfo> = context.packageManager.getInstalledPackages(0)
+        list = installedPackages.map { it.packageName }.toList()
     } catch (_: Exception) {
     }
     return list
@@ -53,6 +49,15 @@ fun write(context: String) {
             )
         }
     } catch (_: Exception) {
+    }
+}
+
+@SuppressLint("SdCardPath")
+fun deleteLogFile() {
+    try{
+        val f = File("/sdcard/log")
+        if(f.exists()) f.delete()
+    } catch (_: Exception){
     }
 }
 
@@ -92,12 +97,6 @@ fun read2(path: String?): List<String?>? {
     }
     return lines
 }
-
-lateinit var cameraListener: (String, Boolean) -> Unit
-lateinit var gpsListener: (String) -> Unit
-lateinit var permissionListener: (String, String?, Int) -> Unit
-lateinit var nfcListener: (String) -> Unit
-lateinit var applicationListener: (String, Int) -> Unit
 
 
 var mService: ISystemLogHelpInterface? = null

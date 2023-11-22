@@ -1,6 +1,8 @@
 package com.android.systemlog
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         textViewApp?.movementMethod = ScrollingMovementMethod()
         textViewResult?.movementMethod = ScrollingMovementMethod()
 
+//        startService(Intent(this, MyService::class.java))
         registerListenInterface(this)
 
         findViewById<Button>(R.id.button_file).setOnClickListener {
