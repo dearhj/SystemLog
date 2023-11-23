@@ -85,45 +85,60 @@ class SystemLogHelp : Service() {
             if (intent.action != null) {
                 when (intent.action) {
                     cameraInterface -> {
-                        val packageName = intent.getStringExtra("packageName")
-                        val isOpen = intent.getBooleanExtra("enable", false)
-                        packageName?.let { cameraInfoDataInterface?.cameraData(it, isOpen) }
+                        try {
+                            val packageName = intent.getStringExtra("packageName")
+                            val isOpen = intent.getBooleanExtra("enable", false)
+                            packageName?.let { cameraInfoDataInterface?.cameraData(it, isOpen) }
+                        } catch (_: Exception) {
+                        }
                     }
 
                     permissionInterface -> {
-                        val packageName = intent.getStringExtra("packageName")
-                        val permission = intent.getStringExtra("perminsss")
-                        val status = intent.getIntExtra("status", -1)
-                        if (permission != "" && packageName != "")
-                            permissionInfoDataInterface?.permissionData(
-                                packageName!!,
-                                permission!!,
-                                status
-                            )
+                        try {
+                            val packageName = intent.getStringExtra("packageName")
+                            val permission = intent.getStringExtra("perminsss")
+                            val status = intent.getIntExtra("status", -1)
+                            if (permission != "" && packageName != "")
+                                permissionInfoDataInterface?.permissionData(
+                                    packageName!!,
+                                    permission!!,
+                                    status
+                                )
+                        } catch (_: Exception) {
+                        }
                     }
 
                     locationInterface -> {
-                        val packageName = intent.getStringExtra("packageName")
-                        if (packageName != "com.android.permissioncontroller") {
-                            packageName?.let { locationInfoDataInterface?.locationData(it) }
+                        try {
+                            val packageName = intent.getStringExtra("packageName")
+                            if (packageName != "com.android.permissioncontroller") {
+                                packageName?.let { locationInfoDataInterface?.locationData(it) }
+                            }
+                        } catch (_: Exception) {
                         }
                     }
 
                     nfcInterface -> {
-                        val packageName = intent.getStringExtra("packageName")
-                        packageName?.let { nfcInfoDataInterface?.nfcData(it) }
+                        try {
+                            val packageName = intent.getStringExtra("packageName")
+                            packageName?.let { nfcInfoDataInterface?.nfcData(it) }
+                        } catch (_: Exception) {
+                        }
                     }
 
                     applicationInterface -> {
-                        val pid = intent.getIntExtra("pid", -1)
-                        val status = intent.getIntExtra("status", -1)
-                        var applicationName = getPackageNameFromPid(pid)
-                        if (pid != -1 && applicationName != "com.android.launcher3" && status != -1 && applicationName != "com.android.permissioncontroller") {
-                            if (status == 0) addPackageName(pid, applicationName)
-                            if (status == 2) applicationName = getDiedProgressName(pid)
-                            if (!applicationName.contains(":") && applicationName != "") {
-                                appInfoDataInterface?.addData(applicationName, status)
+                        try {
+                            val pid = intent.getIntExtra("pid", -1)
+                            val status = intent.getIntExtra("status", -1)
+                            var applicationName = getPackageNameFromPid(pid)
+                            if (pid != -1 && applicationName != "com.android.launcher3" && status != -1 && applicationName != "com.android.permissioncontroller") {
+                                if (status == 0) addPackageName(pid, applicationName)
+                                if (status == 2) applicationName = getDiedProgressName(pid)
+                                if (!applicationName.contains(":") && applicationName != "") {
+                                    appInfoDataInterface?.addData(applicationName, status)
+                                }
                             }
+                        } catch (_: Exception) {
                         }
                     }
                 }
