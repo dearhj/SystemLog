@@ -14,12 +14,13 @@ import java.lang.Thread.sleep
  */
 fun registerListenInterface(context: Context) {
     try {
-        mActivity = context as Activity
         val intent = Intent()
         intent.action = "com.android.systemloghelp.LogHelpService"
         intent.setPackage("com.android.systemloghelp")
         context.bindService(intent, conn, Context.BIND_AUTO_CREATE)
+        mActivity = context as Activity
     } catch (_: Exception) {
+        mActivity = null
     }
 }
 
@@ -44,16 +45,20 @@ fun unRegisterListenInterface(context: Context) {
  * @return null
  */
 fun setCameraUsageListener(onChange: (String, Boolean) -> Unit) {
-    Thread {
-        while (mService == null) {
-            sleep(50)
-        }
-        mService?.getCameraUsageInfoData(object : ICameraUsageInfoDataInterface.Stub() {
-            override fun cameraUsageInfo(pkName: String?, enable: Boolean) {
-                pkName?.let { mActivity?.runOnUiThread { onChange(it, enable) } }
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
             }
-        })
-    }.start()
+            mService?.getCameraUsageInfoData(object : ICameraUsageInfoDataInterface.Stub() {
+                override fun cameraUsageInfo(pkName: String?, enable: Boolean) {
+                    if (mActivity == null) pkName?.let { onChange(it, enable) }
+                    else pkName?.let { mActivity!!.runOnUiThread { onChange(it, enable) } }
+                }
+            })
+        }.start()
+    } catch (_: Exception) {
+    }
 }
 
 /**
@@ -62,16 +67,20 @@ fun setCameraUsageListener(onChange: (String, Boolean) -> Unit) {
  * @return null
  */
 fun setGpsUsageListener(onChange: (String) -> Unit) {
-    Thread {
-        while (mService == null) {
-            sleep(50)
-        }
-        mService?.getLocationUsageInfoData(object : ILocationUsageInfoDataInterface.Stub() {
-            override fun locationInfoData(pkgName: String?) {
-                pkgName?.let { mActivity?.runOnUiThread { onChange(it) } }
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
             }
-        })
-    }.start()
+            mService?.getLocationUsageInfoData(object : ILocationUsageInfoDataInterface.Stub() {
+                override fun locationInfoData(pkgName: String?) {
+                    if (mActivity == null) pkgName?.let { onChange(it) }
+                    else pkgName?.let { mActivity?.runOnUiThread { onChange(it) } }
+                }
+            })
+        }.start()
+    } catch (_: Exception) {
+    }
 }
 
 /**
@@ -80,16 +89,20 @@ fun setGpsUsageListener(onChange: (String) -> Unit) {
  * @return null
  */
 fun setAppPermissionRequestListener(onChange: (String, String?, Int) -> Unit) {
-    Thread {
-        while (mService == null) {
-            sleep(50)
-        }
-        mService?.getPremissionUsageInfoData(object : IPermissionUsageInfoDataInterface.Stub() {
-            override fun permissionInfoData(pkgName: String?, name: String?, status: Int) {
-                pkgName?.let { mActivity?.runOnUiThread { onChange(it, name, status) } }
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
             }
-        })
-    }.start()
+            mService?.getPremissionUsageInfoData(object : IPermissionUsageInfoDataInterface.Stub() {
+                override fun permissionInfoData(pkgName: String?, name: String?, status: Int) {
+                    if (mActivity == null) pkgName?.let { onChange(it, name, status) }
+                    else pkgName?.let { mActivity?.runOnUiThread { onChange(it, name, status) } }
+                }
+            })
+        }.start()
+    } catch (_: Exception) {
+    }
 }
 
 /**
@@ -98,16 +111,20 @@ fun setAppPermissionRequestListener(onChange: (String, String?, Int) -> Unit) {
  * @return null
  */
 fun setNfcUsageListener(onChange: (String) -> Unit) {
-    Thread {
-        while (mService == null) {
-            sleep(50)
-        }
-        mService?.getNfcUsageInfoData(object : INfcUsageInfoDataInterface.Stub() {
-            override fun nfcInfoData(pkgName: String?) {
-                pkgName?.let { mActivity?.runOnUiThread { onChange(it) } }
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
             }
-        })
-    }.start()
+            mService?.getNfcUsageInfoData(object : INfcUsageInfoDataInterface.Stub() {
+                override fun nfcInfoData(pkgName: String?) {
+                    if (mActivity == null) pkgName?.let { onChange(it) }
+                    else pkgName?.let { mActivity?.runOnUiThread { onChange(it) } }
+                }
+            })
+        }.start()
+    } catch (_: Exception) {
+    }
 }
 
 /**
@@ -116,16 +133,20 @@ fun setNfcUsageListener(onChange: (String) -> Unit) {
  * @return null
  */
 fun setAppUsageListener(onChange: (String, Int) -> Unit) {
-    Thread {
-        while (mService == null) {
-            sleep(50)
-        }
-        mService?.getAppUsageInfoData(object : IAppUsageInfoDataInterface.Stub() {
-            override fun appInfoData(pkName: String?, status: Int) {
-                pkName?.let { mActivity?.runOnUiThread { onChange(it, status) } }
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
             }
-        })
-    }.start()
+            mService?.getAppUsageInfoData(object : IAppUsageInfoDataInterface.Stub() {
+                override fun appInfoData(pkName: String?, status: Int) {
+                    if (mActivity == null) pkName?.let { onChange(it, status) }
+                    else pkName?.let { mActivity?.runOnUiThread { onChange(it, status) } }
+                }
+            })
+        }.start()
+    } catch (_: Exception) {
+    }
 }
 
 /**

@@ -73,7 +73,10 @@ class SystemLogHelp : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(mainReceiver)
+        try {
+            unregisterReceiver(mainReceiver)
+        } catch (_: Exception) {
+        }
     }
 
 
@@ -129,9 +132,13 @@ class SystemLogHelp : Service() {
     }
 
     fun getPackageNameFromPid(pid: Int): String {
-        val am = (context?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
-        val runningProcess = am.runningAppProcesses
-        return runningProcess.firstOrNull { it.pid == pid }?.processName ?: ""
+        return try {
+            val am = (context?.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+            val runningProcess = am.runningAppProcesses
+            runningProcess.firstOrNull { it.pid == pid }?.processName ?: ""
+        } catch (_: Exception) {
+            ""
+        }
     }
 
     private fun getAllApplicationByRunningAppProcesses() {
@@ -144,20 +151,29 @@ class SystemLogHelp : Service() {
     }
 
     private fun getDiedProgressName(pid: Int): String {
-        runningProcessName?.forEach { if (it.first == pid) return it.second }
+        try {
+            runningProcessName?.forEach { if (it.first == pid) return it.second }
+        } catch (_: Exception) {
+        }
         return ""
     }
 
     private fun addPackageName(pid: Int, packageName: String) {
-        var needAdd = true
-        runningProcessName?.forEach { if (it.first == pid) needAdd = false }
-        if (needAdd) runningProcessName?.add(Pair(pid, packageName))
+        try {
+            var needAdd = true
+            runningProcessName?.forEach { if (it.first == pid) needAdd = false }
+            if (needAdd) runningProcessName?.add(Pair(pid, packageName))
+        } catch (_: Exception) {
+        }
     }
 
     class MyBinder : ISystemLogHelpInterface.Stub() {
         override fun getNetWorkTrafficData(packageName: String?): MutableMap<String, String>? {
-            if (packageName != null && context != null) {
-                return getTrafficDataByPackageName(context!!, packageName).toMutableMap()
+            try {
+                if (packageName != null && context != null) {
+                    return getTrafficDataByPackageName(context!!, packageName).toMutableMap()
+                }
+            } catch (_: Exception) {
             }
             return null
         }
@@ -167,14 +183,17 @@ class SystemLogHelp : Service() {
             previousTime: Long,
             networkRecodeListen: INetworkRecordInterface?
         ) {
-            if (packageName != null) {
-                getNetworkRecordDataList(packageName, previousTime).forEach {
-                    networkRecodeListen?.networkRecodeInfo(
-                        it["packageName"],
-                        it["url"],
-                        it["logTime"]
-                    )
+            try {
+                if (packageName != null) {
+                    getNetworkRecordDataList(packageName, previousTime).forEach {
+                        networkRecodeListen?.networkRecodeInfo(
+                            it["packageName"],
+                            it["url"],
+                            it["logTime"]
+                        )
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
 
@@ -183,55 +202,73 @@ class SystemLogHelp : Service() {
             previousTime: Long,
             fileUsageRecordListen: IFileUsageRecordInterface?
         ) {
-            if (filePaths != null) {
-                getFileUsageRecordDataList(filePaths, previousTime).forEach {
-                    fileUsageRecordListen?.fileUsageRecordInfo(
-                        it["packageName"],
-                        it["filePath"],
-                        it["fileOperateType"],
-                        it["logTime"]
-                    )
+            try {
+                if (filePaths != null) {
+                    getFileUsageRecordDataList(filePaths, previousTime).forEach {
+                        fileUsageRecordListen?.fileUsageRecordInfo(
+                            it["packageName"],
+                            it["filePath"],
+                            it["fileOperateType"],
+                            it["logTime"]
+                        )
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
 
         override fun getCameraUsageInfoData(cameraUsageInfo: ICameraUsageInfoDataInterface?) {
-            cameraInfoDataInterface = object : CameraInfoDataInterface {
-                override fun cameraData(pkName: String, enable: Boolean) {
-                    cameraUsageInfo?.cameraUsageInfo(pkName, enable)
+            try {
+                cameraInfoDataInterface = object : CameraInfoDataInterface {
+                    override fun cameraData(pkName: String, enable: Boolean) {
+                        cameraUsageInfo?.cameraUsageInfo(pkName, enable)
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
 
         override fun getLocationUsageInfoData(locationUsageInfo: ILocationUsageInfoDataInterface?) {
-            locationInfoDataInterface = object : LocationInfoDataInterface {
-                override fun locationData(pkName: String) {
-                    locationUsageInfo?.locationInfoData(pkName)
+            try {
+                locationInfoDataInterface = object : LocationInfoDataInterface {
+                    override fun locationData(pkName: String) {
+                        locationUsageInfo?.locationInfoData(pkName)
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
 
         override fun getPremissionUsageInfoData(permissionUsageInfo: IPermissionUsageInfoDataInterface?) {
-            permissionInfoDataInterface = object : PermissionInfoDataInterface {
-                override fun permissionData(pkName: String, name: String, status: Int) {
-                    permissionUsageInfo?.permissionInfoData(pkName, name, status)
+            try {
+                permissionInfoDataInterface = object : PermissionInfoDataInterface {
+                    override fun permissionData(pkName: String, name: String, status: Int) {
+                        permissionUsageInfo?.permissionInfoData(pkName, name, status)
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
 
         override fun getNfcUsageInfoData(nfcUsageInfo: INfcUsageInfoDataInterface?) {
-            nfcInfoDataInterface = object : NfcInfoDataInterface {
-                override fun nfcData(pkName: String) {
-                    nfcUsageInfo?.nfcInfoData(pkName)
+            try {
+                nfcInfoDataInterface = object : NfcInfoDataInterface {
+                    override fun nfcData(pkName: String) {
+                        nfcUsageInfo?.nfcInfoData(pkName)
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
 
         override fun getAppUsageInfoData(appUsageInfo: IAppUsageInfoDataInterface?) {
-            appInfoDataInterface = object : AppInfoDataInterface {
-                override fun addData(pkName: String, status: Int) {
-                    appUsageInfo?.appInfoData(pkName, status)
+            try {
+                appInfoDataInterface = object : AppInfoDataInterface {
+                    override fun addData(pkName: String, status: Int) {
+                        appUsageInfo?.appInfoData(pkName, status)
+                    }
                 }
+            } catch (_: Exception) {
             }
         }
     }
