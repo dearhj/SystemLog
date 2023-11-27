@@ -187,7 +187,7 @@ fun getFileUsageRecordList(
 }
 
 /**
- * @description 获取网络流量日志接口
+ * @description 获取网络流量日志接口   注意：此接口部分应用无法监听
  * @param packageName 包名
  * @param previousTime 从现在到以前的时间段
  * @return List<Map<String, String>> 数据集合   packageName(包名)、url(请求连接/请求域)、logTime(日志时间)
