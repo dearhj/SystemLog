@@ -1,0 +1,103 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.android.systemloglib",
+    "module": "systemloglib",
+    "version": "1.0-20231127",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.9.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "systemloglib-1.0-20231127.aar",
+          "url": "systemloglib-1.0-20231127.aar",
+          "size": 48469,
+          "sha512": "7c0f27652b49785dcca0d46fc93b55485a4779f2297f8c586208e78c8c752ea847e3ed1afc8d65d8c4baeb674955c1b16d5493200602056e98a073191a5a581c",
+          "sha256": "544abf20241c9cadd4aa04fe47cca78e4e057e6f41e011af20ade1b57ad5eac6",
+          "sha1": "4e2e54e51083092b6bca4f6662689f853a0d4bee",
+          "md5": "c198cbe0ee7be5ceef9d3eef2dd5aa33"
+        }
+      ]
+    },
+    {
+      "name": "releaseRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "dependencies": [
+        {
+          "group": "androidx.core",
+          "module": "core-ktx",
+          "version": {
+            "requires": "1.12.0"
+          }
+        },
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib-jdk8",
+          "version": {
+            "requires": "1.9.0"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "systemloglib-1.0-20231127.aar",
+          "url": "systemloglib-1.0-20231127.aar",
+          "size": 48469,
+          "sha512": "7c0f27652b49785dcca0d46fc93b55485a4779f2297f8c586208e78c8c752ea847e3ed1afc8d65d8c4baeb674955c1b16d5493200602056e98a073191a5a581c",
+          "sha256": "544abf20241c9cadd4aa04fe47cca78e4e057e6f41e011af20ade1b57ad5eac6",
+          "sha1": "4e2e54e51083092b6bca4f6662689f853a0d4bee",
+          "md5": "c198cbe0ee7be5ceef9d3eef2dd5aa33"
+        }
+      ]
+    },
+    {
+      "name": "releaseSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "files": [
+        {
+          "name": "systemloglib-1.0-20231127-sources.jar",
+          "url": "systemloglib-1.0-20231127-sources.jar",
+          "size": 9421,
+          "sha512": "79d59418a4b0d652820261eecd0c66fbd1f6b0b3c20e40d5b2ebb37f97be1e07ce01c77fe6a81ce6e81c7bac1a0e65fc140c4d7f6931f753928c0eabb971f98d",
+          "sha256": "d5de9c4492e25d1e2db30019060bf0e557b575f7186a7ecf71d460f4d2eb5d1c",
+          "sha1": "b8e532f3dd3f153b365c217993b9548987841699",
+          "md5": "32d97343e61a497a642f9a22155fd74d"
+        }
+      ]
+    }
+  ]
+}
