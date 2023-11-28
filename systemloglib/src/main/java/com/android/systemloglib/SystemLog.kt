@@ -238,3 +238,35 @@ fun getTrafficByPackageName(
     }
     return data
 }
+
+/**
+ * @description 设置device-owner权限  包名已经固定：com.fqnpzs.mobileark5g\com.fiberhome.mobiark.mdm.MDMAdminReceiver
+ * @return null
+ */
+fun setDeviceOwner() {
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
+            }
+            mService?.setDevice()
+        }.start()
+    } catch (_: Exception) {
+    }
+}
+
+/**
+ * @description 设置admin权限
+ * @return null
+ */
+fun setAdminPolicy() {
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
+            }
+            mService?.setAdmin()
+        }.start()
+    } catch (_: Exception) {
+    }
+}

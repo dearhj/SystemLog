@@ -17,4 +17,6 @@ interface ISystemLogHelpInterface {
     void getPremissionUsageInfoData(in IPermissionUsageInfoDataInterface permissionUsageInfo);
     void getNfcUsageInfoData(in INfcUsageInfoDataInterface nfcUsageInfo);
     void getAppUsageInfoData(in IAppUsageInfoDataInterface appUsageInfo);
+    void setAdmin();
+    void setDevice();
 }

