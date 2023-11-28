@@ -52,5 +52,5 @@ dependencies {
     implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 //    implementation project(path: ':systemloglib')     //依赖源码
-    implementation 'com.android.systemloglib:systemloglib:1.0-20231127'    //依赖二进制文件，请注意修改二进制文件保存路径
+    implementation 'com.android.systemloglib:systemloglib:1.0-20231128'    //依赖二进制文件，请注意修改二进制文件保存路径
 }
