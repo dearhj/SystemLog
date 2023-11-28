@@ -18,5 +18,6 @@ interface ISystemLogHelpInterface {
     void getNfcUsageInfoData(in INfcUsageInfoDataInterface nfcUsageInfo);
     void getAppUsageInfoData(in IAppUsageInfoDataInterface appUsageInfo);
     void setAdmin();
+    void setProfile();
     void setDevice();
 }

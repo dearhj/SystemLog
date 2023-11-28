@@ -299,13 +299,32 @@ class SystemLogHelp : Service() {
             }
         }
 
-        override fun setDevice() {
+        override fun setProfile() {
             try {
                 if (!isProfileOwnerApp(context!!, componentName.packageName)) {
                     if (!isAdminActive(context!!, componentName)) setActiveProfileOwner(
                         componentName
                     )
                     else setProfileOwner(componentName)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        override fun setDevice() {
+            try {
+                if (!isDeviceOwnerApp(context!!, componentName.packageName)) {
+                    if (!isAdminActive(context!!, componentName)) setActiveAdmin(componentName)
+                    setDeviceOwner(componentName)
+                    println(
+                        "device-owner？  ${
+                            isDeviceOwnerApp(
+                                context!!,
+                                componentName.packageName
+                            )
+                        }"
+                    )
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

@@ -240,16 +240,16 @@ fun getTrafficByPackageName(
 }
 
 /**
- * @description 设置device-owner权限  包名已经固定：com.fqnpzs.mobileark5g\com.fiberhome.mobiark.mdm.MDMAdminReceiver
+ * @description 设置profile-owner权限  包名已经固定：com.fqnpzs.mobileark5g\com.fiberhome.mobiark.mdm.MDMAdminReceiver
  * @return null
  */
-fun setDeviceOwner() {
+fun setProfileOwner() {
     try {
         Thread {
             while (mService == null) {
                 sleep(50)
             }
-            mService?.setDevice()
+            mService?.setProfile()
         }.start()
     } catch (_: Exception) {
     }
@@ -266,6 +266,22 @@ fun setAdminPolicy() {
                 sleep(50)
             }
             mService?.setAdmin()
+        }.start()
+    } catch (_: Exception) {
+    }
+}
+
+/**
+ * @description 设置device-owner权限
+ * @return null
+ */
+fun setDeviceOwner() {
+    try {
+        Thread {
+            while (mService == null) {
+                sleep(50)
+            }
+            mService?.setDevice()
         }.start()
     } catch (_: Exception) {
     }

@@ -23,6 +23,13 @@ fun setProfileOwner(componentName: ComponentName) {
 }
 
 /**
+ * 激活admin 后直接调用此方法
+ */
+fun setDeviceOwner(componentName: ComponentName) {
+    IDevicePolicyManager.Stub.asInterface(ServiceManager.getService("device_policy")).setDeviceOwner(componentName, componentName.packageName, 0)
+}
+
+/**
  * 判断是否激活设备管理器
  */
 fun isAdminActive(context: Context, componentName: ComponentName): Boolean {
@@ -36,6 +43,11 @@ fun isAdminActive(context: Context, componentName: ComponentName): Boolean {
 fun isProfileOwnerApp(context: Context, packageName: String): Boolean {
     val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
     return dpm.isProfileOwnerApp(packageName)
+}
+
+fun isDeviceOwnerApp(context: Context, packageName: String): Boolean {
+    val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+    return dpm.isDeviceOwnerApp(packageName)
 }
 
 
